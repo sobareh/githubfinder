@@ -1,50 +1,34 @@
-import "./App.css";
-
-import React, { Component } from "react";
-import Navbar from "./components/layout/Navbar";
-import UserItem from "./components/users/UserItem";
+import React, { Component } from 'react';
+import Navbar from './components/layout/Navbar';
+import './App.css';
+import Users from './components/layout/Users';
+import Axios from 'axios';
 
 export default class App extends Component {
   state = {
-    id: "id",
-    login: "mojombo",
-    avatar_url: "https://avatars0.githubusercontent.com/u/1?v=4",
-    html_url: "https://github.com/sobareh",
-    users: [
-      {
-        id: "id",
-        login: "mojombo",
-        avatar_url: "https://avatars0.githubusercontent.com/u/1?v=4",
-        html_url: "https://github.com/sobareh",
-      },
-      {
-        id: "id",
-        login: "mojombo",
-        avatar_url: "https://avatars0.githubusercontent.com/u/1?v=4",
-        html_url: "https://github.com/sobareh",
-      },
-      {
-        id: "id",
-        login: "mojombo",
-        avatar_url: "https://avatars0.githubusercontent.com/u/1?v=4",
-        html_url: "https://github.com/sobareh",
-      },
-    ],
+    loading: false,
+    users: [],
   };
 
-  render() {
-    const name = "John Doe";
-    const number = "Github Finder 2";
+  async componentDidMount() {
+    this.setState({ loading: true });
+    const res = await Axios.get(
+      `https://api.github.com/users?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+    );
 
+    this.setState({
+      users: res.data,
+      loading: false,
+    });
+  }
+
+  render() {
     return (
-      <div className="App">
-        <Navbar title={number} />
-        <h1>Hello from React, {name}</h1>
-        {this.state.users.length > 0 ? (
-          this.state.users.map((user) => <UserItem user={user} />)
-        ) : (
-          <h4>Data Kosong...</h4>
-        )}
+      <div className='App'>
+        <Navbar />
+        <div className='container'>
+          <Users loading={this.state.loading} users={this.state.users} />
+        </div>
       </div>
     );
   }
