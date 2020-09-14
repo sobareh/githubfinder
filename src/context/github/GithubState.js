@@ -10,6 +10,14 @@ import {
   GET_REPOS,
 } from '../types';
 
+let githubClientToken;
+
+if (process.env.NODE_ENV !== 'production') {
+  githubClientToken = process.env.REACT_APP_GITHUB_TOKEN;
+} else {
+  githubClientToken = process.env.GITHUB_CLIENT_TOKEN;
+}
+
 const GithubState = props => {
   const initialState = {
     users: [],
@@ -22,7 +30,7 @@ const GithubState = props => {
 
   const github = axios.create({
     headers: {
-      Authorization: process.env.REACT_APP_GITHUB_TOKEN,
+      Authorization: githubClientToken,
     },
   });
 
